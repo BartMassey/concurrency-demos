@@ -8,7 +8,9 @@
 /* Generate-and-test concurrency via processes */
 
 #include <assert.h>
+#ifndef __USE_POSIX
 #define __USE_POSIX
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
