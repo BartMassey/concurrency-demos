@@ -5,7 +5,7 @@
  * distribution of this software for license terms.
  */
 
-   Generate-and-test concurrency via processes */
+/* Generate-and-test concurrency via processes */
 
 #include <assert.h>
 #define __USE_POSIX
