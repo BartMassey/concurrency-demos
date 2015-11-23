@@ -17,7 +17,7 @@
 FILE *pf;
 
 /* Generator
-   Produces random numbers in the range 0..50.
+   Produces random numbers in the range 0..49.
    See http://www.ams.org/journals/mcom/1999-68-225/
         S0025-5718-99-00996-5/S0025-5718-99-00996-5.pdf */
 uint64_t s = 4000000;
