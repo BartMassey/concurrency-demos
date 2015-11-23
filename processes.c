@@ -60,12 +60,14 @@ int main(void) {
     /* If child, run the generator */
     if (pid == 0) {
         pf = fdopen(pipefd[1], "w");
+        assert(pf);
         randint();
         assert(0);
     }
 
     /* Run the tester */
     pf = fdopen(pipefd[0], "r");
+    assert(pf);
     for (int i = 0; i < 10; i++)
         printf("%d\n", next_rand_prime()); 
     exit(0);
