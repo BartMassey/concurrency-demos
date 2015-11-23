@@ -26,9 +26,9 @@ bool is_prime(int n) {
 }
 
 # Generate-and-test driver
-int next_rand_prime(*int s) {
+int next_rand_prime(*int s, *(int(*int)) callback) {
     while (true) {
-        int pc = randint(s);
+        int pc = (*callback)(s);
         if (is_prime(pc))
             return pc;
     }
@@ -37,4 +37,4 @@ int next_rand_prime(*int s) {
 # Run the whole system
 int s = 4000000;
 for (int i = 0; i < 10; i++)
-    printf("%d\n", next_rand_prime(&s)); 
+    printf("%d\n", next_rand_prime(&s, &randint));
