@@ -1,0 +1,44 @@
+# Copyright © 2015 Bart Massey
+# Generate-and-test concurrency via threads
+
+autoload Mailbox;
+
+mailbox r = Mailbox::new();
+
+# Generator
+# Produces random numbers in the range 0..50.
+# See http://www.ams.org/journals/mcom/1999-68-225/
+#      S0025-5718-99-00996-5/S0025-5718-99-00996-5.pdf
+int s = 4000000;
+int randint() {
+    while (true) {
+        Mailbox::put(r, s % 50);
+        s = (s * 914334) % 4194301;
+    }
+}
+
+fork randint();
+
+# Tester
+bool is_prime(int n) {
+    if (n < 2)
+        return false;
+    for (int i = 2; i*i <= n; i++)
+        if (n % i == 0)
+            return false;
+    return true;
+}
+
+# Generate-and-test driver
+int next_rand_prime() {
+    while (true) {
+        int pc = Mailbox::get(r);
+        if (is_prime(pc))
+            return pc;
+    }
+}
+
+# Run the whole system
+for (int i = 0; i < 10; i++)
+    printf("%d\n", next_rand_prime()); 
+exit(0);

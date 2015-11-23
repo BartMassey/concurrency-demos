@@ -1,0 +1,33 @@
+import File;
+
+int n = 0;
+semaphore n_lock = Semaphore::new(0);
+semaphore n_unlock = Semaphore::new(1);
+
+bool debugging = false;
+
+void debug(string format, args...) {
+     if (debugging)
+         fprintf(stderr, format, args...);
+}
+
+void count_up() {
+     debug("count_up\n");
+     while (true) {
+          debug("count_up n_lock\n");
+          Semaphore::wait(n_lock);
+          n = n + 1;
+          debug("count_up n_unlock\n");
+          Semaphore::signal(n_unlock);
+     }
+}
+
+t = fork count_up();
+
+while (true) {
+     debug("n_unlock\n");
+     Semaphore::wait(n_unlock);
+     fprintf(stderr, "n %d\n", n);
+     debug("n_lock\n");
+     Semaphore::signal(n_lock);
+}

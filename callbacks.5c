@@ -1,0 +1,36 @@
+# Copyright © 2015 Bart Massey
+# Generate-and-test concurrency via callbacks
+
+# Generator
+# Produces random numbers in the range 0..50.
+# See http://www.ams.org/journals/mcom/1999-68-225/
+#      S0025-5718-99-00996-5/S0025-5718-99-00996-5.pdf
+int randint(*int s) {
+    int r = *s % 50;
+    *s = (*s * 914334) % 4194301;
+    return r;
+}
+
+# Tester
+bool is_prime(int n) {
+    if (n < 2)
+        return false;
+    for (int i = 2; i*i <= n; i++)
+        if (n % i == 0)
+            return false;
+    return true;
+}
+
+# Generate-and-test driver
+int next_rand_prime(*int s) {
+    while (true) {
+        int pc = randint(s);
+        if (is_prime(pc))
+            return pc;
+    }
+}
+
+# Run the whole system
+int s = 4000000;
+for (int i = 0; i < 10; i++)
+    printf("%d\n", next_rand_prime(&s)); 

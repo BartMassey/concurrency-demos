@@ -1,0 +1,31 @@
+# Copyright © 2015 Bart Massey
+# Mutex demo
+
+autoimport File;
+autoload Mutex;
+
+bool use_mutex = false;
+mutex iom = Mutex::new();
+
+int count = 0;
+
+void blather() {
+    while (true) {
+        if (use_mutex)
+            Mutex::acquire(iom);
+        fprintf(stderr, "blather %d\n", count++);
+        if (use_mutex)
+            Mutex::release(iom);
+        sleep(1);
+    }
+}
+
+fork blather();
+
+while (true) {
+    if (use_mutex)
+        Mutex::acquire(iom);
+    fprintf(stderr, "whine %d\n", count++);
+    if (use_mutex)
+        Mutex::release(iom);
+}

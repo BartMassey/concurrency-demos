@@ -1,0 +1,54 @@
+# Copyright © 2015 Bart Massey
+
+/*
+ * Mailboxes
+ *
+ * Mailboxes can hold a value stored by a thread,
+ * and can have that value extracted by another thread,
+ * in a thread-safe fashion.
+ */
+
+public typedef struct {
+    poly storage;
+    semaphore write_lock;
+    semaphore read_lock;
+} mailbox_struct;
+
+public typedef *mailbox_struct mailbox;
+
+namespace Mailbox {
+
+    public mailbox new()
+	/*
+	 * Create a new empty mailbox.
+	 */
+    {
+        mailbox_struct m;
+        m.read_lock = Semaphore::new(0);
+        m.write_lock = Semaphore::new(1);
+        return &m;
+    }
+
+    public mailbox put(mailbox m, poly v)
+	/*
+	 * Wait for the mailbox to be empty,
+         * then store the value v in it.
+	 */
+    {
+        Semaphore::wait(m->write_lock);
+        m->storage = v;
+        Semaphore::signal(m->read_lock);
+    }
+
+    public poly get(mailbox m)
+	/*
+	 * Wait for the mailbox to be full,
+         * then extract the stored value.
+	 */
+    {
+        Semaphore::wait(m->read_lock);
+        poly v = m->storage;
+        Semaphore::signal(m->write_lock);
+        return v;
+    }
+}
